@@ -7,6 +7,7 @@ class WebDriverEnvironment extends NodeEnvironment {
     const options = config.testEnvironmentOptions || {};
     this.browserName = options.browser || 'chrome';
     this.seleniumAddress = options.seleniumAddress || null;
+    this.headless = options.headless || false;
   }
 
   async setup() {
@@ -16,7 +17,11 @@ class WebDriverEnvironment extends NodeEnvironment {
     if (this.seleniumAddress) {
       driver = driver.usingServer(this.seleniumAddress);
     }
-    driver = await driver.forBrowser(this.browserName).build();
+    driver = await driver.forBrowser(this.browserName);
+    if (this.headless) {
+      driver = driver.headless();
+    }
+    driver = driver.build();
 
     this.driver = driver;
 
